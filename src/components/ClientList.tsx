@@ -11,11 +11,11 @@ interface ClientListProps {
   onViewClient: (client: Client) => void;
   onEditClient: (client: Client) => void;
   onDeleteClient: (client: Client) => void;
-  onMarkPaid: (client: Client) => void;
+  // onMarkPaid: (client: Client) => void;
   onAddClient?: () => void;
 }
 
-export function ClientList({ onViewClient, onEditClient, onDeleteClient, onMarkPaid, onAddClient }: ClientListProps) {
+export function ClientList({ onViewClient, onEditClient, onDeleteClient, onAddClient }: ClientListProps) {
   const [clients] = useAtom(clientsAtom);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -72,7 +72,6 @@ export function ClientList({ onViewClient, onEditClient, onDeleteClient, onMarkP
               onView={onViewClient}
               onEdit={onEditClient}
               onDelete={onDeleteClient}
-              onMarkPaid={onMarkPaid}
             />
           ))}
         </div>

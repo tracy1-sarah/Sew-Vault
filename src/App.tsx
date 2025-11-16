@@ -69,7 +69,7 @@ function App() {
       </div>
 
       <div className="relative z-10">
-        <Header onAddClient={handleAddClient} />
+        <Header />
         <main className="container mx-auto px-4 py-8">
           {viewMode === 'list' ? (
             <motion.div
@@ -82,7 +82,7 @@ function App() {
                 onViewClient={handleViewClient} 
                 onEditClient={handleEditClient}
                 onDeleteClient={handleDeleteClient}
-                onMarkPaid={handleMarkPaid}
+                // onMarkPaid={handleMarkPaid}
                 onAddClient={handleAddClient}
               />
             </motion.div>

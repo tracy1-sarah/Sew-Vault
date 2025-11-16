@@ -41,9 +41,14 @@ export function useAuth() {
     try {
       setError(null);
       await signInWithEmailAndPassword(auth, email, password);
-    } catch (err: any) {
-      setError(err.message || 'Failed to sign in');
-      throw err;
+    } catch (err: unknown) {
+      let message = 'Failed to sign in';
+
+      if (err instanceof Error) {
+        message = err.message;
+      }
+
+      setError(message);
     }
   };
 
