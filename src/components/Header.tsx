@@ -1,9 +1,14 @@
 import { Button } from '@/components/ui/button';
-import { Scissors, LogOut, User } from 'lucide-react';
+import {Scissors, LogOut, User, Plus} from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 
-export function Header() {
+interface addClientProps {
+    onAddClient: () => void;
+    hasClients?: boolean;
+}
+
+export function Header({ onAddClient, hasClients }: addClientProps) {
   const { user, userProfile, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -44,6 +49,12 @@ export function Header() {
             </div>
           </div>
           <div className="flex items-center gap-3">
+            {!hasClients && (
+                <Button onClick={onAddClient} className="ml-4 gap-2 cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-200">
+                  <Plus className="h-4 w-4" />
+                  Add Client
+                </Button>
+            )}
             {user && (
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <User className="h-4 w-4" />

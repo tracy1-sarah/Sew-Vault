@@ -8,6 +8,7 @@ import { useClients } from '@/hooks/useClients';
 
 function App() {
   const {
+      clients,
     selectedClient,
     isFormDialogOpen,
     editingClient,
@@ -69,7 +70,7 @@ function App() {
       </div>
 
       <div className="relative z-10">
-        <Header />
+        <Header onAddClient={handleAddClient} hasClients={clients.length > 0}/>
         <main className="container mx-auto px-4 py-8">
           {viewMode === 'list' ? (
             <motion.div
