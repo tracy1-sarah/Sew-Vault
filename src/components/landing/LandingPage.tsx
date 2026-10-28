@@ -11,8 +11,8 @@ import {
   ArrowRight,
   Phone,
   Search,
-  ShieldCheck,
   Menu,
+  Mail,
   X,
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
@@ -160,7 +160,7 @@ export function LandingPage() {
   const [menuOpen, setMenuOpen] = useState(false);
   const feature = features.find((f) => f.key === active)!;
 
-  const primaryCta = user ? { to: '/dashboard', label: 'Open My Vault' } : { to: '/signup', label: 'Create Free Account' };
+  const primaryCta = { to: user ? '/dashboard' : '/signup' };
 
   return (
     <div className="min-h-screen bg-[#F3F1EA] font-['Plus_Jakarta_Sans',ui-sans-serif,system-ui,sans-serif] text-[#0C2A22] antialiased">
@@ -253,17 +253,14 @@ export function LandingPage() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="mt-8 flex flex-col items-center gap-3"
           >
-            <Link
-              to={primaryCta.to}
+            <a
+              href="mailto:taframowusu@gmail.com?subject=SewVault%20enquiry"
               className="group inline-flex items-center gap-2 rounded-xl bg-[#C8F169] px-6 py-3 font-semibold text-[#0C2A22] transition hover:bg-[#d6f78a]"
             >
-              {primaryCta.label}
+              <Mail className="h-4 w-4" />
+              Contact Us
               <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
-            </Link>
-            <p className="flex items-center gap-1.5 text-xs text-white/55">
-              <ShieldCheck className="h-3.5 w-3.5 text-[#8EF0B5]" />
-              Sign up with email or Google · Your records sync to the cloud
-            </p>
+            </a>
           </motion.div>
         </div>
 
@@ -406,24 +403,6 @@ export function LandingPage() {
               </motion.div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* ───────── CTA ───────── */}
-      <section className="px-4 py-20 sm:px-6">
-        <div className="relative mx-auto max-w-6xl overflow-hidden rounded-[2rem] bg-[#0C2A22] px-6 py-14 text-center text-white sm:px-12">
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(124,242,156,0.2),transparent_60%)]" />
-          <h2 className="relative text-3xl font-bold tracking-tight text-[#8EF0B5] sm:text-4xl">Put down the notebook.</h2>
-          <p className="relative mx-auto mt-4 max-w-lg text-white/70">
-            Keep every client, measurement and balance safe in SewVault — and spend more time doing what you love.
-          </p>
-          <Link
-            to={primaryCta.to}
-            className="relative mt-8 inline-flex items-center gap-2 rounded-xl bg-[#C8F169] px-6 py-3 font-semibold text-[#0C2A22] transition hover:bg-[#d6f78a]"
-          >
-            {primaryCta.label}
-            <ArrowRight className="h-4 w-4" />
-          </Link>
         </div>
       </section>
 
