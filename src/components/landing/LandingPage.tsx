@@ -268,7 +268,7 @@ export function LandingPage() {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.3 }}
-          className="relative mt-4 pb-10"
+          className="relative -mt-2 pb-10"
         >
           <HeroCarousel />
         </motion.div>

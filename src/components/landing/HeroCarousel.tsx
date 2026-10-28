@@ -123,7 +123,7 @@ export function HeroCarousel() {
   return (
     <div className="relative mx-auto w-full">
       <div
-        className="relative h-[400px] sm:h-[480px] lg:h-[520px] cursor-grab active:cursor-grabbing select-none touch-pan-y"
+        className="relative h-[330px] sm:h-[420px] lg:h-[460px] cursor-grab active:cursor-grabbing select-none touch-pan-y"
         style={{ perspective: '1400px' }}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
