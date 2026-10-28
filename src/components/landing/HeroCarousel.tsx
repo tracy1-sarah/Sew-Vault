@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const images = [
   { src: '/landing/seamstress-hat.jpg', alt: 'Seamstress sewing wax print fabric at her machine' },
@@ -115,10 +114,6 @@ export function HeroCarousel() {
       pause();
     }
   };
-  const nudge = (dir: 1 | -1) => {
-    target.current = Math.round((target.current + dir * STEP) / STEP) * STEP;
-    pause(4000);
-  };
 
   return (
     <div className="relative mx-auto w-full">
@@ -163,26 +158,6 @@ export function HeroCarousel() {
             ))}
           </div>
         </div>
-      </div>
-
-      <div className="relative z-20 mt-4 flex items-center justify-center gap-3 text-xs text-white/60">
-        <button
-          type="button"
-          onClick={() => nudge(1)}
-          aria-label="Previous photo"
-          className="grid h-8 w-8 place-items-center rounded-full border border-white/15 bg-white/5 text-white transition hover:bg-white/15"
-        >
-          <ChevronLeft className="h-4 w-4" />
-        </button>
-        <span>Drag, swipe or scroll to spin</span>
-        <button
-          type="button"
-          onClick={() => nudge(-1)}
-          aria-label="Next photo"
-          className="grid h-8 w-8 place-items-center rounded-full border border-white/15 bg-white/5 text-white transition hover:bg-white/15"
-        >
-          <ChevronRight className="h-4 w-4" />
-        </button>
       </div>
     </div>
   );
