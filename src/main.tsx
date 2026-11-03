@@ -8,6 +8,7 @@ import { SignUpPage } from './components/auth/SignUpPage.tsx'
 import { ForgotPasswordPage } from './components/auth/ForgotPasswordPage.tsx'
 import { ProtectedRoute } from './components/ProtectedRoute.tsx'
 import { AuthRedirect } from './components/auth/AuthRedirect.tsx'
+import { ResetPasswordPage } from './components/auth/ResetPasswordPage.tsx'
 import { LandingPage } from './components/landing/LandingPage.tsx'
 
 createRoot(document.getElementById('root')!).render(
@@ -38,6 +39,7 @@ createRoot(document.getElementById('root')!).render(
             </AuthRedirect>
           }
         />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/" element={<LandingPage />} />
         <Route
           path="/dashboard"

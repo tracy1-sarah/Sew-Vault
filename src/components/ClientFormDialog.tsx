@@ -128,7 +128,7 @@ export function ClientFormDialog({ open, onOpenChange, onSubmit, client }: Clien
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
-            <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-200">Save Client</Button>
+            <Button type="submit" className="bg-[#0C2A22] hover:bg-[#164034] text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-200">Save Client</Button>
           </DialogFooter>
         </form>
       </DialogContent>

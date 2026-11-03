@@ -26,8 +26,9 @@ export function Header({ onAddClient, hasClients }: addClientProps) {
     if (userProfile?.name) {
       return userProfile.name.split(' ')[0];
     }
-    if (user?.displayName) {
-      return user.displayName.split(' ')[0];
+    const metadataName = user?.user_metadata?.full_name || user?.user_metadata?.name;
+    if (metadataName) {
+      return String(metadataName).split(' ')[0];
     }
     if (user?.email) {
       return user.email.split('@')[0];
@@ -50,7 +51,7 @@ export function Header({ onAddClient, hasClients }: addClientProps) {
           </div>
           <div className="flex items-center gap-3">
             {!hasClients && (
-                <Button onClick={onAddClient} className="ml-4 gap-2 cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-200">
+                <Button onClick={onAddClient} className="ml-4 gap-2 cursor-pointer bg-[#0C2A22] hover:bg-[#164034] text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-200">
                   <Plus className="h-4 w-4" />
                   Add Client
                 </Button>

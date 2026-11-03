@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Scissors, Mail, ArrowLeft, CheckCircle, Ruler, CircleDot, Grid, Square, Hexagon } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { AuthNavbar } from './AuthNavbar';
 
 export function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -29,7 +30,8 @@ export function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gray-50 relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center p-4 pt-24 bg-gray-50 relative overflow-hidden">
+      <AuthNavbar />
       {/* Minimalistic floating sewing icons */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
@@ -259,7 +261,7 @@ export function ForgotPasswordPage() {
 
                 <Button
                   type="submit"
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-200"
+                  className="w-full bg-[#0C2A22] hover:bg-[#164034] text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-200"
                   disabled={isLoading}
                 >
                   {isLoading ? 'Sending...' : 'Send Reset Link'}

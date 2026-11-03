@@ -1,5 +1,4 @@
-import { doc, setDoc, getDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { supabase } from '@/lib/supabase';
 
 export interface UserProfile {
   name: string;
@@ -8,21 +7,17 @@ export interface UserProfile {
   updatedAt: string;
 }
 
+// Profiles are created by a database trigger when a user signs up
+// (see supabase/schema.sql), so the app only reads and updates them.
 export const userProfileService = {
-  // Create or update user profile
-  async saveUserProfile(userId: string, profile: Partial<UserProfile>): Promise<void> {
-    try {
-      const userDocRef = doc(db, 'users', userId);
-      const now = new Date().toISOString();
-      
-      const profileData = {
-        ...profile,
-        updatedAt: now,
-        createdAt: profile.createdAt || now,
-      };
-      
-      await setDoc(userDocRef, profileData, { merge: true });
-    } catch (error) {
+  // Update user profile
+  async saveUserProfile(userId: string, profile: Partial<Pick<UserProfile, 'name' | 'email'>>): Promise<void> {
+    const { error } = await supabase
+      .from('profiles')
+      .update({ ...profile, updated_at: new Date().toISOString() })
+      .eq('id', userId);
+
+    if (error) {
       console.error('Error saving user profile:', error);
       throw error;
     }
@@ -30,18 +25,23 @@ export const userProfileService = {
 
   // Get user profile
   async getUserProfile(userId: string): Promise<UserProfile | null> {
-    try {
-      const userDocRef = doc(db, 'users', userId);
-      const userDoc = await getDoc(userDocRef);
-      
-      if (userDoc.exists()) {
-        return userDoc.data() as UserProfile;
-      }
-      return null;
-    } catch (error) {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('name, email, created_at, updated_at')
+      .eq('id', userId)
+      .maybeSingle();
+
+    if (error) {
       console.error('Error fetching user profile:', error);
       throw error;
     }
+    if (!data) return null;
+
+    return {
+      name: data.name ?? '',
+      email: data.email ?? '',
+      createdAt: data.created_at,
+      updatedAt: data.updated_at,
+    };
   },
 };
-

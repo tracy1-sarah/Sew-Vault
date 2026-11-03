@@ -53,7 +53,7 @@ export function ClientList({ onViewClient, onEditClient, onDeleteClient, onAddCl
             </div>
 
             {/* Add Client button */}
-            <Button onClick={onAddClient} className="ml-4 gap-2 cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-200">
+            <Button onClick={onAddClient} className="ml-4 gap-2 cursor-pointer bg-[#0C2A22] hover:bg-[#164034] text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-200">
                 <Plus className="h-4 w-4" />
                 Add Client
             </Button>

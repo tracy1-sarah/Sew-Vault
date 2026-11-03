@@ -1,122 +1,118 @@
 import { useState, useEffect } from 'react';
-import { 
-  signInWithEmailAndPassword, 
-  createUserWithEmailAndPassword,
-  signInWithPopup,
-  signOut,
-  sendPasswordResetEmail,
-  onAuthStateChanged,
-  type User
-} from 'firebase/auth';
-import { auth, googleProvider } from '@/lib/firebase';
+import type { User } from '@supabase/supabase-js';
+import { supabase } from '@/lib/supabase';
 import { userProfileService, type UserProfile } from '@/services/userProfileService';
+
+const getErrorMessage = (err: unknown, fallback: string) =>
+  err instanceof Error && err.message ? err.message : fallback;
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [loadedProfile, setLoadedProfile] = useState<{ userId: string; profile: UserProfile | null } | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setUser(user);
-      if (user) {
-        // Load user profile when user is authenticated
-        try {
-          const profile = await userProfileService.getUserProfile(user.uid);
-          setUserProfile(profile);
-        } catch (error) {
-          console.error('Failed to load user profile:', error);
-        }
-      } else {
-        setUserProfile(null);
-      }
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
       setLoading(false);
     });
 
-    return () => unsubscribe();
+    // Token refreshes hand back a new user object for the same person; keep the
+    // old one so effects keyed on `user` (like loading clients) don't re-run.
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      const nextUser = session?.user ?? null;
+      setUser((prev) => (prev?.id === nextUser?.id ? prev : nextUser));
+      setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
+  // Load the profile outside the auth callback; Supabase warns against
+  // awaiting other Supabase calls inside onAuthStateChange.
+  const userId = user?.id;
+  useEffect(() => {
+    if (!userId) return;
+    let cancelled = false;
+    userProfileService
+      .getUserProfile(userId)
+      .then((profile) => {
+        if (!cancelled) setLoadedProfile({ userId, profile });
+      })
+      .catch((err) => console.error('Failed to load user profile:', err));
+    return () => {
+      cancelled = true;
+    };
+  }, [userId]);
+  const userProfile = loadedProfile && loadedProfile.userId === userId ? loadedProfile.profile : null;
+
   const login = async (email: string, password: string) => {
-    try {
-      setError(null);
-      await signInWithEmailAndPassword(auth, email, password);
-    } catch (err: unknown) {
-      let message = 'Failed to sign in';
-
-      if (err instanceof Error) {
-        message = err.message;
-      }
-
-      setError(message);
+    setError(null);
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      setError(getErrorMessage(error, 'Failed to sign in'));
     }
   };
 
+  // Resolves to true when the user must confirm their email before signing in.
   const signup = async (email: string, password: string, name?: string) => {
-    try {
-      setError(null);
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      
-      // Save user profile if name is provided
-      if (name && userCredential.user) {
-        await userProfileService.saveUserProfile(userCredential.user.uid, {
-          name,
-          email,
-          createdAt: new Date().toISOString(),
-        });
-        // Reload profile
-        const profile = await userProfileService.getUserProfile(userCredential.user.uid);
-        setUserProfile(profile);
-      }
-    } catch (err: any) {
-      setError(err.message || 'Failed to sign up');
-      throw err;
+    setError(null);
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: name ? { name } : undefined,
+        emailRedirectTo: `${window.location.origin}/dashboard`,
+      },
+    });
+    if (error) {
+      setError(getErrorMessage(error, 'Failed to sign up'));
+      throw error;
     }
+    return !data.session;
   };
 
+  // Redirects to Google, then back to the dashboard.
   const loginWithGoogle = async () => {
-    try {
-      setError(null);
-      const result = await signInWithPopup(auth, googleProvider);
-      
-      // Save user profile if it doesn't exist (for Google sign-in)
-      if (result.user) {
-        const existingProfile = await userProfileService.getUserProfile(result.user.uid);
-        if (!existingProfile) {
-          const displayName = result.user.displayName || result.user.email?.split('@')[0] || 'User';
-          await userProfileService.saveUserProfile(result.user.uid, {
-            name: displayName,
-            email: result.user.email || '',
-            createdAt: new Date().toISOString(),
-          });
-        }
-        // Reload profile
-        const profile = await userProfileService.getUserProfile(result.user.uid);
-        setUserProfile(profile);
-      }
-    } catch (err: any) {
-      setError(err.message || 'Failed to sign in with Google');
-      throw err;
+    setError(null);
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: `${window.location.origin}/dashboard` },
+    });
+    if (error) {
+      setError(getErrorMessage(error, 'Failed to sign in with Google'));
+      throw error;
     }
   };
 
   const logout = async () => {
-    try {
-      setError(null);
-      await signOut(auth);
-    } catch (err: any) {
-      setError(err.message || 'Failed to sign out');
-      throw err;
+    setError(null);
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      setError(getErrorMessage(error, 'Failed to sign out'));
+      throw error;
     }
   };
 
   const resetPassword = async (email: string) => {
-    try {
-      setError(null);
-      await sendPasswordResetEmail(auth, email);
-    } catch (err: any) {
-      setError(err.message || 'Failed to send password reset email');
-      throw err;
+    setError(null);
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    if (error) {
+      setError(getErrorMessage(error, 'Failed to send password reset email'));
+      throw error;
+    }
+  };
+
+  // Used by the reset-password page after the user follows the email link.
+  const updatePassword = async (password: string) => {
+    setError(null);
+    const { error } = await supabase.auth.updateUser({ password });
+    if (error) {
+      setError(getErrorMessage(error, 'Failed to update password'));
+      throw error;
     }
   };
 
@@ -130,6 +126,6 @@ export function useAuth() {
     loginWithGoogle,
     logout,
     resetPassword,
+    updatePassword,
   };
 }
-

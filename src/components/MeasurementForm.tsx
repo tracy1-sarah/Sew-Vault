@@ -88,7 +88,7 @@ export function MeasurementForm({ measurements, onSubmit, onCancel }: Measuremen
                 Cancel
               </Button>
             )}
-              <Button type="submit" className="flex items-center mx-auto bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-200">
+              <Button type="submit" className="flex items-center mx-auto bg-[#0C2A22] hover:bg-[#164034] text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-200">
                 <Save className="h-4 w-4 mr-2" />
                 Save Measurements
               </Button>

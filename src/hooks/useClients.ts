@@ -14,7 +14,7 @@ export function useClients() {
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useAuth();
 
-  // Load clients from Firestore when user is authenticated
+  // Load clients from Supabase when user is authenticated
   useEffect(() => {
     if (user) {
       loadClients();
@@ -30,7 +30,7 @@ export function useClients() {
     
     try {
       setIsLoading(true);
-      const fetchedClients = await clientsService.getClients(user.uid);
+      const fetchedClients = await clientsService.getClients(user.id);
       setClients(fetchedClients);
     } catch (error) {
       console.error('Failed to load clients:', error);
@@ -75,7 +75,7 @@ export function useClients() {
           balance,
           updatedAt: now,
         };
-        await clientsService.updateClient(user.uid, editingClient.id, updates);
+        await clientsService.updateClient(user.id, editingClient.id, updates);
         
         // Update local state
         setClients(
@@ -93,7 +93,7 @@ export function useClients() {
           createdAt: now,
           updatedAt: now,
         };
-        const clientId = await clientsService.addClient(user.uid, newClientData);
+        const clientId = await clientsService.addClient(user.id, newClientData);
         
         // Update local state
         const newClient: Client = {
@@ -114,7 +114,7 @@ export function useClients() {
 
     try {
       const updatedAt = new Date().toISOString();
-      await clientsService.updateClient(user.uid, selectedClient.id, {
+      await clientsService.updateClient(user.id, selectedClient.id, {
         measurements,
         updatedAt,
       });
@@ -141,7 +141,7 @@ export function useClients() {
 
     if (window.confirm(`Are you sure you want to delete ${clientToDelete.name}? This action cannot be undone.`)) {
       try {
-        await clientsService.deleteClient(user.uid, clientToDelete.id);
+        await clientsService.deleteClient(user.id, clientToDelete.id);
         
         // Update local state
         setClients(clients.filter((client) => client.id !== clientToDelete.id));
@@ -160,7 +160,7 @@ export function useClients() {
     if (!user) return;
 
     try {
-      await clientsService.updateClient(user.uid, client.id, {
+      await clientsService.updateClient(user.id, client.id, {
         isPaid: true,
         balance: 0,
         updatedAt: new Date().toISOString(),
