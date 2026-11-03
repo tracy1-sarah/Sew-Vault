@@ -11,33 +11,31 @@ export function useClients() {
   const [isFormDialogOpen, setIsFormDialogOpen] = useState(false);
   const [editingClient, setEditingClient] = useState<Client | null>(null);
   const [viewMode, setViewMode] = useState<'list' | 'detail'>('list');
-  const [isLoading, setIsLoading] = useState(true);
+  // The id of the user whose clients are loaded; loading until it matches.
+  const [loadedUserId, setLoadedUserId] = useState<string | null>(null);
   const { user } = useAuth();
+  const userId = user?.id;
+  const isLoading = !!userId && loadedUserId !== userId;
 
   // Load clients from Supabase when user is authenticated
   useEffect(() => {
-    if (user) {
-      loadClients();
-    } else {
+    if (!userId) return;
+    let cancelled = false;
+    clientsService
+      .getClients(userId)
+      .then((fetchedClients) => {
+        if (!cancelled) setClients(fetchedClients);
+      })
+      .catch((error) => console.error('Failed to load clients:', error))
+      .finally(() => {
+        if (!cancelled) setLoadedUserId(userId);
+      });
+    return () => {
+      cancelled = true;
+      // Don't show one user's clients to the next one who signs in.
       setClients([]);
-      setIsLoading(false);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
-
-  const loadClients = async () => {
-    if (!user) return;
-    
-    try {
-      setIsLoading(true);
-      const fetchedClients = await clientsService.getClients(user.id);
-      setClients(fetchedClients);
-    } catch (error) {
-      console.error('Failed to load clients:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    };
+  }, [userId, setClients]);
 
   const handleAddClient = () => {
     setEditingClient(null);

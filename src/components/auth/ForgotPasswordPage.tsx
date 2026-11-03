@@ -22,7 +22,7 @@ export function ForgotPasswordPage() {
     try {
       await resetPassword(email);
       setIsSuccess(true);
-    } catch (err) {
+    } catch {
       // Error is handled by useAuth hook
     } finally {
       setIsLoading(false);

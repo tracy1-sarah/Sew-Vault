@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -37,9 +37,12 @@ const measurementFields = [
 export function MeasurementForm({ measurements, onSubmit, onCancel }: MeasurementFormProps) {
   const [formData, setFormData] = useState<Measurements>(measurements);
 
-  useEffect(() => {
+  // Reset the form when a different set of measurements is passed in.
+  const [prevMeasurements, setPrevMeasurements] = useState(measurements);
+  if (prevMeasurements !== measurements) {
+    setPrevMeasurements(measurements);
     setFormData(measurements);
-  }, [measurements]);
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

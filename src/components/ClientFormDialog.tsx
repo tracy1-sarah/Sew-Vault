@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,37 +12,34 @@ interface ClientFormDialogProps {
   client?: Client | null;
 }
 
-export function ClientFormDialog({ open, onOpenChange, onSubmit, client }: ClientFormDialogProps) {
-  const [formData, setFormData] = useState<ClientFormData>({
-    name: '',
-    date: new Date().toISOString().split('T')[0],
-    phoneNumber: '',
-    amountCharged: undefined,
-    advancePaid: undefined,
-    measurements: {},
-  });
-
-  useEffect(() => {
-    if (client) {
-      setFormData({
+const initialFormData = (client?: Client | null): ClientFormData =>
+  client
+    ? {
         name: client.name,
         date: client.date,
         phoneNumber: client.phoneNumber,
         amountCharged: client.amountCharged,
         advancePaid: client.advancePaid,
         measurements: client.measurements,
-      });
-    } else {
-      setFormData({
+      }
+    : {
         name: '',
         date: new Date().toISOString().split('T')[0],
         phoneNumber: '',
         amountCharged: undefined,
         advancePaid: undefined,
         measurements: {},
-      });
-    }
-  }, [client, open]);
+      };
+
+export function ClientFormDialog({ open, onOpenChange, onSubmit, client }: ClientFormDialogProps) {
+  const [formData, setFormData] = useState<ClientFormData>(() => initialFormData(client));
+
+  // Reset the form whenever the dialog opens or switches to another client.
+  const [prev, setPrev] = useState({ client, open });
+  if (prev.client !== client || prev.open !== open) {
+    setPrev({ client, open });
+    setFormData(initialFormData(client));
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

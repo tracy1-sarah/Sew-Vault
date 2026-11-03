@@ -20,7 +20,7 @@ export function LoginPage() {
     setIsLoading(true);
     try {
       await login(email, password);
-    } catch (err) {
+    } catch {
       // Error is handled by useAuth hook
     } finally {
       setIsLoading(false);
@@ -31,7 +31,7 @@ export function LoginPage() {
     setIsLoading(true);
     try {
       await loginWithGoogle();
-    } catch (err) {
+    } catch {
       // Error is handled by useAuth hook
     } finally {
       setIsLoading(false);

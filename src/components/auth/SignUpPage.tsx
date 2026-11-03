@@ -29,7 +29,7 @@ export function SignUpPage() {
     try {
       const needsConfirmation = await signup(email, password, name);
       setConfirmationSent(needsConfirmation);
-    } catch (err) {
+    } catch {
       // Error is handled by useAuth hook
     } finally {
       setIsLoading(false);
@@ -40,7 +40,7 @@ export function SignUpPage() {
     setIsLoading(true);
     try {
       await loginWithGoogle();
-    } catch (err) {
+    } catch {
       // Error is handled by useAuth hook
     } finally {
       setIsLoading(false);
