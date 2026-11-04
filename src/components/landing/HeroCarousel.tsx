@@ -16,13 +16,13 @@ const images = [
 const STEP = 360 / images.length;
 
 function useRingSize() {
-  const [size, setSize] = useState({ radius: 600, cardW: 210, cardH: 280 });
+  const [size, setSize] = useState({ radius: 720, cardW: 250, cardH: 335 });
   useEffect(() => {
     const update = () => {
       const w = window.innerWidth;
-      if (w < 640) setSize({ radius: 300, cardW: 120, cardH: 160 });
-      else if (w < 1024) setSize({ radius: 420, cardW: 160, cardH: 210 });
-      else setSize({ radius: 600, cardW: 210, cardH: 280 });
+      if (w < 640) setSize({ radius: 440, cardW: 190, cardH: 255 });
+      else if (w < 1024) setSize({ radius: 500, cardW: 190, cardH: 250 });
+      else setSize({ radius: 720, cardW: 250, cardH: 335 });
     };
     update();
     window.addEventListener('resize', update);
@@ -118,7 +118,7 @@ export function HeroCarousel() {
   return (
     <div className="relative mx-auto w-full">
       <div
-        className="relative h-[330px] sm:h-[420px] lg:h-[460px] cursor-grab active:cursor-grabbing select-none touch-pan-y"
+        className="relative h-[470px] sm:h-[540px] lg:h-[620px] cursor-grab active:cursor-grabbing select-none touch-pan-y"
         style={{ perspective: '1400px' }}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
@@ -126,8 +126,6 @@ export function HeroCarousel() {
         onPointerCancel={onPointerUp}
         onWheel={onWheel}
       >
-        {/* Glow at the centre of the ring */}
-        <div className="pointer-events-none absolute left-1/2 top-1/2 h-[320px] w-[320px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#7CF29C]/25 blur-[90px]" />
 
         <div className="absolute left-1/2 top-1/2 h-0 w-0" style={{ transformStyle: 'preserve-3d' }}>
           <div ref={ringRef} style={{ transformStyle: 'preserve-3d' }}>

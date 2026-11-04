@@ -166,8 +166,6 @@ export function LandingPage() {
     <div className="min-h-screen bg-[#F3F1EA] font-['Plus_Jakarta_Sans',ui-sans-serif,system-ui,sans-serif] text-[#0C2A22] antialiased">
       {/* ───────── Hero ───────── */}
       <section className="relative overflow-hidden bg-[#0C2A22] text-white">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_80%,rgba(124,242,156,0.18),transparent_60%)]" />
-
         <nav className="relative z-30 mx-auto flex max-w-6xl items-center justify-between px-4 py-5 sm:px-6">
           <Link to="/" className="flex items-center gap-2 text-lg font-bold">
             <span className="grid h-8 w-8 place-items-center rounded-full bg-[#C8F169] text-[#0C2A22]">
